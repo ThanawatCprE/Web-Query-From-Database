@@ -19,7 +19,7 @@ td {
 <script>
 
 var database;
-
+var table;
 window.onload = function(){ getdatabase() };
 
 function getdatabase() {
@@ -27,12 +27,9 @@ function getdatabase() {
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
        database = JSON.parse(this.responseText);
-	   for(var i=0;i<database.length;i++){
-         console.log(database[i].Database);
-		 //console.log(typeof(database[i]));
+       createElementDB(database);
       }
-	  createElementDB(database);
-      }
+	  database = [];
     };
   xhttp.open("GET", "/getdatabase", true);
   xhttp.send();
@@ -40,22 +37,32 @@ function getdatabase() {
 function createElementDB(databaseName){
 	   		var ele='<option value="">- - Select Database - -</option>';
 		          	for (var i=0;i<databaseName.length;i++){
-		          		ele +='<option>'+databaseName[i].Database+'</option>';
+		          		ele +='<option value="'+databaseName[i].Database+'">'+databaseName[i].Database+'</option>';
 		          	}
 					document.getElementById("database").innerHTML = ele;
 	}
-	
 function getTable(){
+	var DBname = document.getElementById("database").value;
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-       
-	  createElementTB(database);
+		table = JSON.parse(this.responseText);
+		 var name = "Tables_in_";
+             name += DBname ;
       }
+	  table = [];
     };
-  xhttp.open("GET", "/gettable", true);
+  xhttp.open("GET", "/gettable?Database="+DBname, true);
   xhttp.send();
 }
+function createElementTB(tablesName,Dbname){
+	   		var ele='<option value="">- - Select Table - -</option>';
+		          	for (var i=0;i<tablesName.length;i++){
+		          		ele +='<option value="'+tablesName[i][Dbname]+'">'+tablesName[i][Dbname]+'</option>';
+		          	}
+					document.getElementById("table").innerHTML = ele;
+					//console.log();
+	}
 </script>
 </head>
 <body>
@@ -79,7 +86,7 @@ function getTable(){
         <td align="center"></td>
         <td align="center">
         <b>Database :</b>
-        <select id="database" style="width: 300px; text-align-last:center;" >
+        <select onchange="getTable()" id="database" style="width: 300px; text-align-last:center;" >
         </select>
         </td>
     </tr>
