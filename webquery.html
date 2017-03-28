@@ -11,11 +11,18 @@
 }
 
 td {
-  padding-top: 3px;
-  padding-bottom: 3px;
+    text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.dis {
+	font: italic bold 12px/30px Georgia, serif;
+    text-align: center;
+    cursor: pointer;
+	border: 2px outset gray ;
 }
 </style>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
 
 var database;
@@ -50,6 +57,7 @@ function getTable(){
 		 var name = "Tables_in_";
              name += DBname ;
 			 createElementTB(table,name);
+			 document.getElementById("createTB").innerHTML = '';
       }
 	  table = [];
     };
@@ -62,8 +70,38 @@ function createElementTB(tablesName,Dbname){
 		          		ele +='<option value="'+tablesName[i][Dbname]+'">'+tablesName[i][Dbname]+'</option>';
 		          	}
 					document.getElementById("table").innerHTML = ele;
-					//console.log();
 	}
+	
+function selectTable(){
+  var Tablename = document.getElementById("table").value;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+		  displayData(JSON.parse(this.responseText));
+          }
+		  Tablename= [];
+    };
+  xhttp.open("GET", "/selectTable?Name="+Tablename, true);
+  xhttp.send();
+}
+
+function displayData(JsonData){
+	console.log(JsonData);
+	var cTable = '<tr>';
+          var column = Object.keys(JsonData[0]);
+            for (var i = 0; i < column.length; i++) {
+              cTable = cTable +"<td>"+column[i]+"</td>" ;
+            }
+            cTable = cTable +"</tr>";
+        for (var i = 0; i < JsonData.length; i++) {
+          cTable = cTable + '<tr>';
+            for (var j = 0; j < column.length; j++) {
+              cTable = cTable+"<td>"+JsonData[i][column[j]]+"</td>" ;
+            }
+          cTable = cTable +"</tr>" ;
+        }
+	document.getElementById("createTB").innerHTML = cTable;
+}
 </script>
 </head>
 <body>
@@ -103,9 +141,10 @@ function createElementTB(tablesName,Dbname){
 	<tr>
 		<td></td>
 		<td align="center">
-			<button>Enter!</button>
+			<button onclick="selectTable()" >Enter!</button>
 		</td>
 		<td></td>
 	</tr>
 </table>
+<table id="createTB" class="dis" align="center"> </table>
 </html>
