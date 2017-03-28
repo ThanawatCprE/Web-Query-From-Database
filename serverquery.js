@@ -3,7 +3,7 @@ var mysql      = require('mysql');
 var path    = require("path");
 var app = express();
 
-function connect(DBname){}
+
 var connection = mysql.createConnection({
   host     : 'localhost',
   port     : '3306',
@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
   password : '20022539',
   database : 'test'
 });
-}
+
 
 connection.connect(function(err){
 if(!err) {
@@ -30,8 +30,29 @@ app.get('/getdatabase',function(req,res){
   connection.end();
     if (!err){
       res.send(JSON.stringify(rows));
-      console.log(rows);
-      console.log(typeof(rows));
+     // console.log(rows);
+     // console.log(typeof(rows));
+  } else{
+    console.log('Error while performing Query.');
+  }
+  });
+});
+
+app.get('/gettable?',function(req,res){
+  var DBname = req.query.Database;
+  var togetTable = mysql.createConnection({
+  host     : 'localhost',
+  port     : '3306',
+  user     : 'root',
+  password : '20022539',
+  database : DBname
+  });
+  togetTable.query('SHOW Tables', function(err, tables) {
+  togetTable.end();
+    if (!err){
+      res.send(JSON.stringify(tables));
+     // console.log(rows);
+     // console.log(typeof(rows));
   } else{
     console.log('Error while performing Query.');
   }
