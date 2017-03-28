@@ -49,6 +49,7 @@ function getTable(){
 		table = JSON.parse(this.responseText);
 		 var name = "Tables_in_";
              name += DBname ;
+			 createElementTB(table,name);
       }
 	  table = [];
     };
