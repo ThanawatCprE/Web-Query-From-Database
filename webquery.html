@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.newspaper {
+    -webkit-column-count: 2; /* Chrome, Safari, Opera */
+    -moz-column-count: 5; /* Firefox */
+    column-count:3;
+    -webkit-column-break-after: always;
+	 break-: column;
+}
+
+td {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+
+var database;
+
+window.onload = function(){ getdatabase() };
+
+function getdatabase() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       database = JSON.parse(this.responseText);
+	   for(var i=0;i<database.length;i++){
+         console.log(database[i].Database);
+		 //console.log(typeof(database[i]));
+      }
+	  createElementDB(database);
+      }
+    };
+  xhttp.open("GET", "/getdatabase", true);
+  xhttp.send();
+}
+function createElementDB(databaseName){
+	   		var ele='<option value="">- - Select Database - -</option>';
+		          	for (var i=0;i<databaseName.length;i++){
+		          		ele +='<option>'+databaseName[i].Database+'</option>';
+		          	}
+					document.getElementById("database").innerHTML = ele;
+	}
+	
+function getTable(){
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       
+	  createElementTB(database);
+      }
+    };
+  xhttp.open("GET", "/gettable", true);
+  xhttp.send();
+}
+</script>
+</head>
+<body>
+
+<h1 align="center" >Query Database</h1>
+<table align="center">
+    <tr>
+        <td align="center"><div style="width: 320px;">Database for favourite sport team collect about match,
+        location of match, score, player number, statistic of team and statistic of each player</div></td>
+        
+        <td align="center"><div style="width: 320px;">Database for favourite sport team collect about match,
+        location of match, score, player number, statistic of team and statistic of each player</div></td>
+        
+        <td align="center"><div style="width: 320px;">Database for favourite sport team collect about match,
+        location of match, score, player number, statistic of team and statistic of each player</div></td>
+    </tr>
+</table>
+<hr width="80%" padding-top="50px">
+<table align="center">
+    <tr>      
+        <td align="center"></td>
+        <td align="center">
+        <b>Database :</b>
+        <select id="database" style="width: 300px; text-align-last:center;" >
+        </select>
+        </td>
+    </tr>
+	<tr>      
+        <td align="center"></td>
+        <td align="right">
+        <b>Table   :</b>
+        <select id="table" style="width: 300px; text-align-last:center;" >
+            <option value="">- - Select Table - -</option>
+        </select>
+        </td>
+    </tr>
+	<tr>
+		<td></td>
+		<td align="center">
+			<button>Enter!</button>
+		</td>
+		<td></td>
+	</tr>
+</table>
+</html>
