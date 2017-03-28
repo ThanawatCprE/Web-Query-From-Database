@@ -3,7 +3,7 @@ var mysql      = require('mysql');
 var path    = require("path");
 var app = express();
 
-
+var DBname;
 var connection = mysql.createConnection({
   host     : 'localhost',
   port     : '3306',
@@ -39,7 +39,7 @@ app.get('/getdatabase',function(req,res){
 });
 
 app.get('/gettable?',function(req,res){
-  var DBname = req.query.Database;
+  DBname = req.query.Database;
   var togetTable = mysql.createConnection({
   host     : 'localhost',
   port     : '3306',
@@ -51,12 +51,28 @@ app.get('/gettable?',function(req,res){
   togetTable.end();
     if (!err){
       res.send(JSON.stringify(tables));
-     // console.log(rows);
-     // console.log(typeof(rows));
   } else{
     console.log('Error while performing Query.');
   }
   });
 });
 
+app.get('/selectTable?',function(req,res){
+  var Tablename = req.query.Name;
+  var togetData = mysql.createConnection({
+  host     : 'localhost',
+  port     : '3306',
+  user     : 'root',
+  password : '20022539',
+  database : DBname
+  });
+  togetData.query('SELECT * FROM '+Tablename+'', function(err, data) {
+  togetData.end();
+    if (!err){
+      res.send(JSON.stringify(data));
+  } else{
+    console.log('Error while performing Query.');
+  }
+  });
+});
 app.listen(3000);
