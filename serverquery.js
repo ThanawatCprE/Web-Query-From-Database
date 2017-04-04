@@ -5,7 +5,7 @@ var app = express();
 
 var DBname;
 var connection = mysql.createConnection({
-  host     : 'localhost',
+  host     : '127.0.0.1',
   port     : '3306',
   user     : 'root',
   password : '20022539',
@@ -15,9 +15,9 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err){
 if(!err) {
-    console.log("Database is connected ... nn");    
+    console.log("Database is connected ... ");    
 } else {
-    console.log("Error connecting database ... nn");    
+    console.log("Error connecting database ... ");    
 }
 });
 
@@ -27,7 +27,6 @@ app.get('/',function(req,res){
 
 app.get('/getdatabase',function(req,res){
   connection.query('SHOW DATABASES', function(err, rows) {
-  connection.end();
     if (!err){
       res.send(JSON.stringify(rows));
      // console.log(rows);
@@ -41,7 +40,7 @@ app.get('/getdatabase',function(req,res){
 app.get('/gettable?',function(req,res){
   DBname = req.query.Database;
   var togetTable = mysql.createConnection({
-  host     : 'localhost',
+  host     : '127.0.0.1',
   port     : '3306',
   user     : 'root',
   password : '20022539',
@@ -57,16 +56,36 @@ app.get('/gettable?',function(req,res){
   });
 });
 
-app.get('/selectTable?',function(req,res){
+app.get('/getcolumn?',function(req,res){
   var Tablename = req.query.Name;
   var togetData = mysql.createConnection({
-  host     : 'localhost',
+  host     : '127.0.0.1',
   port     : '3306',
   user     : 'root',
   password : '20022539',
   database : DBname
   });
-  togetData.query('SELECT * FROM '+Tablename+'', function(err, data) {
+  console.log(DBname,Tablename);
+  togetData.query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA ='+'"'+DBname+'"'+' AND TABLE_NAME='+'"'+Tablename+'"', function(err, data) {
+  togetData.end();
+    if (!err){
+      res.send(JSON.stringify(data));
+  } else{
+    console.log('Error while performing Query.');
+  }
+  });
+});
+
+app.get('/selectTable?',function(req,res){
+  var Tablename = req.query.Name;
+  var togetData = mysql.createConnection({
+  host     : '127.0.0.1',
+  port     : '3306',
+  user     : 'root',
+  password : '20022539',
+  database : DBname
+  });
+  togetData.query('SELECT * FROM '+Tablename+' LIMIT 500', function(err, data) {
   togetData.end();
     if (!err){
       res.send(JSON.stringify(data));
