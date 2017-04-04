@@ -72,11 +72,36 @@ function createElementTB(tablesName,Dbname){
 					document.getElementById("table").innerHTML = ele;
 	}
 	
+function getcolumn(){
+	var Tablename = document.getElementById("table").value;
+	var columnName;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+		  columnName = (JSON.parse(this.responseText));
+		  createElementCL(columnName);
+          }
+		  Tablename = [];
+		  columnName= [];
+    };
+  xhttp.open("GET", "/getcolumn?Name="+Tablename, true);
+  xhttp.send();	
+}
+
+function createElementCL(columnName){
+	var ele='<input type="checkbox" value="*"> All ';
+		          	for (var i=0;i<columnName.length;i++){
+		          		ele +='<input type="checkbox" value="'+columnName[i].COLUMN_NAME+'">'+columnName[i].COLUMN_NAME+'';
+		          	}
+					document.getElementById("column").innerHTML = ele;
+}
+
 function selectTable(){
   var Tablename = document.getElementById("table").value;
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
+		//console.log(JSON.parse(this.responseText));
 		  displayData(JSON.parse(this.responseText));
           }
 		  Tablename= [];
@@ -86,10 +111,10 @@ function selectTable(){
 }
 
 function displayData(JsonData){
-	console.log(JsonData);
+	//console.log(JsonData);
 	var cTable = '<tr>';
           var column = Object.keys(JsonData[0]);
-            for (var i = 0; i < column.length; i++) {
+		for (var i = 0; i < column.length; i++) {
               cTable = cTable +"<td>"+column[i]+"</td>" ;
             }
             cTable = cTable +"</tr>";
@@ -133,9 +158,17 @@ function displayData(JsonData){
         <td align="center"></td>
         <td align="right">
         <b>Table   :</b>
-        <select id="table" style="width: 300px; text-align-last:center;" >
+        <select onchange="getcolumn()" id="table" style="width: 300px; text-align-last:center;" >
             <option value="">- - Select Table - -</option>
         </select>
+        </td>
+    </tr>
+	<tr>      
+        <td align="center"></td>
+        <td align="right">
+        <b>column   :</b>
+        <span id="column" style="width: 300px; text-align-last:center;">
+		</span>
         </td>
     </tr>
 	<tr>
